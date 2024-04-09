@@ -1,6 +1,0 @@
-Resultados Nacionais
-Nº total de eleitores: 467117
-Nº total de votos válidos: 467117 (100%)
-Nº total de votos brancos: 0 (0%)
-Nº total de votos nulos: 0 (0%)
-Resultados por partido:

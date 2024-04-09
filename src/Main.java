@@ -2,6 +2,7 @@ import java.io.*;
 import java.nio.file.*;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -18,25 +19,25 @@ public class Main {
         try {
             // Verificar se o diretório existe
             if (Files.exists(diretorioDados)) {
-                // Iterar sobre os arquivos .dat no diretório
-                Files.newDirectoryStream(diretorioDados, "*.dat").forEach(arquivo -> {
-                    // Processar cada arquivo .dat
-                    processarCirculoEleitoral(arquivo, resultadosNacionais);
+                // Iterar sobre os ficheiros .dat no diretório
+                Files.newDirectoryStream(diretorioDados, "*.dat").forEach(ficheiro -> {
+                    // Processar cada ficheiro .dat
+                    processarCirculoEleitoral(ficheiro, resultadosNacionais);
                 });
             } else {
-                System.out.println("O diretório '" + DIRETORIA_DADOS + "' não existe.");
+                System.out.println("A diretoria '" + DIRETORIA_DADOS + "' não existe.");
             }
         } catch (IOException e) {
-            System.err.println("Ocorreu um erro ao acessar o diretório: " + e.getMessage());
+            System.err.println("Ocorreu um erro ao acessar a diretoria: " + e.getMessage());
             e.printStackTrace();
         }
 
-        // Gerar arquivo com os resultados nacionais
-        gerarArquivoResultadoNacional(resultadosNacionais);
+        // Gerar ficheiro com os resultados nacionais
+        gerarFicheiroResultadoNacional(resultadosNacionais);
     }
 
-    private static void processarCirculoEleitoral(Path arquivoBinario, Map<String, Integer> resultadosNacionais) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivoBinario.toFile()))) {
+    private static void processarCirculoEleitoral(Path ficheiroBinario, Map<String, Integer> resultadosNacionais) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ficheiroBinario.toFile()))) {
             VotosCirculoEleitoral votosCirculo = (VotosCirculoEleitoral) ois.readObject();
             String nomeCirculo = votosCirculo.getNomeCirculo();
             Map<String, Integer> resultadosCirculo = processarVotosCirculo(votosCirculo);
@@ -44,7 +45,7 @@ public class Main {
             // Atualizar resultados nacionais
             resultadosCirculo.forEach((partido, votos) -> resultadosNacionais.merge(partido, votos, Integer::sum));
 
-            gerarArquivoResultado(nomeCirculo, resultadosCirculo);
+            gerarFicheiroResultado(nomeCirculo, resultadosCirculo);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -58,9 +59,15 @@ public class Main {
         int totalVotosNulos = 0;
 
         for (VotosConcelho votosConcelho : votosCirculo.getVotosPorConcelho().values()) {
-            for (int votos : votosConcelho.getVotosPorPartido().values()) {
+            for (Map.Entry<String, Integer> entry : votosConcelho.getVotosPorPartido().entrySet()) {
+                String partido = entry.getKey();
+                int votos = entry.getValue();
+
                 totalVotantes += votos;
                 totalVotosValidos += votos;
+
+                // Adicionar votos ao total do partido
+                resultados.merge(partido, votos, Integer::sum);
             }
         }
 
@@ -72,12 +79,13 @@ public class Main {
         return resultados;
     }
 
-    private static void gerarArquivoResultado(String nomeCirculo, Map<String, Integer> resultados) {
+
+    private static void gerarFicheiroResultado(String nomeCirculo, Map<String, Integer> resultados) {
         Path diretorioResultados = Paths.get(DIRETORIO_RESULTADOS);
         try {
             Files.createDirectories(diretorioResultados);
-            String caminhoArquivo = diretorioResultados.resolve(nomeCirculo + ".txt").toString();
-            try (PrintWriter out = new PrintWriter(caminhoArquivo)) {
+            String pathFile = diretorioResultados.resolve(nomeCirculo + ".txt").toString();
+            try (PrintWriter out = new PrintWriter(pathFile)) {
                 out.println("Nome do círculo: " + nomeCirculo);
                 int totalVotantes = resultados.getOrDefault("Nº de votantes", 0);
                 int totalVotosValidos = resultados.getOrDefault("Nº de votos válidos", 0);
@@ -95,22 +103,29 @@ public class Main {
                 out.println("Resultados:");
 
                 // Exibir resultados dos partidos
-                resultados.entrySet().stream()
+                Map<String, Integer> resultadosPartidos = resultados.entrySet().stream()
                         .filter(entry -> !entry.getKey().startsWith("Nº"))
-                        .forEach(entry -> {
-                            double percentualPartido = (double) entry.getValue() / totalVotosValidos * 100;
-                            out.println(entry.getKey() + " - " + DECIMAL_FORMAT.format(percentualPartido) + "% (" + entry.getValue() + " votos)");
-                        });
+                        .sorted(Map.Entry.comparingByKey())
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new));
+
+                for (Map.Entry<String, Integer> entry : resultadosPartidos.entrySet()) {
+                    double percentualPartido = (double) entry.getValue() / totalVotosValidos * 100;
+                    out.println(entry.getKey() + " - " + DECIMAL_FORMAT.format(percentualPartido) + "% (" + entry.getValue() + " votos)");
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void gerarArquivoResultadoNacional(Map<String, Integer> resultadosNacionais) {
+    private static void gerarFicheiroResultadoNacional(Map<String, Integer> resultadosNacionais) {
         try {
-            String caminhoArquivo = DIRETORIO_RESULTADOS + File.separator + "TotalNacional.txt";
-            try (PrintWriter out = new PrintWriter(caminhoArquivo)) {
+            String pathFile = DIRETORIO_RESULTADOS + File.separator + "TotalNacional.txt";
+            try (PrintWriter out = new PrintWriter(pathFile)) {
                 out.println("Resultados Nacionais");
                 int totalEleitores = resultadosNacionais.getOrDefault("Nº de votantes", 0);
                 int totalValidos = resultadosNacionais.getOrDefault("Nº de votos válidos", 0);
