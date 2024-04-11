@@ -1,0 +1,22 @@
+Resultados Nacionais
+Nº total de eleitores: 581211
+Nº total de votos válidos: 581211 (100%)
+Nº total de votos brancos: 204 (0,04%)
+Nº total de votos nulos: 212 (0,04%)
+Resultados por partido:
+Iniciativa Liberal - 0,25% (1430 votos)
+NOVA DIREITA - 0,34% (1999 votos)
+CDU - Coligação Democrática Unitária - 0,01% (82 votos)
+CHEGA - 44,64% (259450 votos)
+Ergue-te - 21,23% (123414 votos)
+Volt Portugal - 0,19% (1133 votos)
+CDU - 5,57% (32373 votos)
+ALTERNATIVA DEMOCRÁTICA NACIONAL - 10,64% (61862 votos)
+Reagir Incluir Reciclar - 5,4% (31391 votos)
+PESSOAS-ANIMAIS-NATUREZA - 0,17% (970 votos)
+Partido Socialista - 6,95% (40372 votos)
+Juntos pelo Povo - 0,2% (1152 votos)
+Bloco de Esquerda - 0,1% (588 votos)
+ALIANÇA DEMOCRÁTICA - 0,15% (851 votos)
+LIVRE - 2,17% (12610 votos)
+ALTERNATIVA 21 - 1,91% (11118 votos)
