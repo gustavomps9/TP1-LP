@@ -67,7 +67,13 @@ public class Main {
                 totalVotosValidos += votos;
 
                 // Adicionar votos ao total do partido
-                resultados.merge(partido, votos, Integer::sum);
+                if (partido.equals("Brancos")) {
+                    totalVotosBrancos += votos;
+                } else if (partido.equals("Nulos")) {
+                    totalVotosNulos += votos;
+                } else {
+                    resultados.merge(partido, votos, Integer::sum);
+                }
             }
         }
 
@@ -78,6 +84,7 @@ public class Main {
 
         return resultados;
     }
+
 
 
     private static void gerarFicheiroResultado(String nomeCirculo, Map<String, Integer> resultados) {
