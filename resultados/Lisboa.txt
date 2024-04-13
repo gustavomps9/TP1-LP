@@ -1,0 +1,21 @@
+Nome do círculo: Lisboa
+Nº de votantes: 73279
+Nº de votos válidos: 73279 (100%)
+Nº de votos brancos: 142 (0,19%)
+Nº de votos nulos: 135 (0,18%)
+Resultados:
+ALIANÇA DEMOCRÁTICA - 2,25% (1647 votos)
+ALTERNATIVA 21 - 1,27% (932 votos)
+ALTERNATIVA DEMOCRÁTICA NACIONAL - 1,75% (1286 votos)
+Bloco de Esquerda - 0,75% (552 votos)
+CDU - 24,59% (18022 votos)
+CHEGA - 28,98% (21239 votos)
+Ergue-te - 1,88% (1377 votos)
+Iniciativa Liberal - 1,07% (784 votos)
+Juntos pelo Povo - 1,47% (1077 votos)
+LIVRE - 1,38% (1011 votos)
+NOVA DIREITA - 1,47% (1077 votos)
+PESSOAS-ANIMAIS-NATUREZA - 1,48% (1087 votos)
+Partido Socialista - 28,35% (20771 votos)
+Reagir Incluir Reciclar - 1,38% (1014 votos)
+Volt Portugal - 1,54% (1126 votos)

@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 
 public class Main {
 
-    private static final String DIRETORIA_DADOS = "dados";
-    private static final String DIRETORIO_RESULTADOS = "resultados";
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+    private static final String DIRETORIA_DADOS = "dados"; // Diretório onde estão os dados de entrada
+    private static final String DIRETORIO_RESULTADOS = "resultados"; // Diretório onde serão armazenados os resultados
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##"); // Formato decimal para arredondamento
 
     public static void main(String[] args) {
         Path diretorioDados = Paths.get(DIRETORIA_DADOS);
 
-        // Mapa para armazenar os resultados nacionais
+        // Mapa para guardar os resultados nacionais
         Map<String, Integer> resultadosNacionais = new HashMap<>();
 
         try {
@@ -21,7 +21,7 @@ public class Main {
             if (Files.exists(diretorioDados)) {
                 // Iterar sobre os ficheiros .dat no diretório
                 Files.newDirectoryStream(diretorioDados, "*.dat").forEach(ficheiro -> {
-                    // Processar cada ficheiro .dat
+                    // Chama processarCirculoEleitoral, onde é passado cada ficheiro .dat e os resultados nacionais
                     processarCirculoEleitoral(ficheiro, resultadosNacionais);
                 });
             } else {
@@ -32,10 +32,14 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Gerar ficheiro com os resultados nacionais
-        gerarFicheiroResultadoNacional(resultadosNacionais);
+        // Chama a função de modo a criar o ficheiro com os resultados nacionais
+        criarFicheiroResultadoTotalNacional(resultadosNacionais);
+
+        // chama a função para dar o print do resultado do ficheiro TotalNacional.txt
+        printTotalNacional();
     }
 
+    // Processar os dados de um círculo eleitoral
     private static void processarCirculoEleitoral(Path ficheiroBinario, Map<String, Integer> resultadosNacionais) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ficheiroBinario.toFile()))) {
             VotosCirculoEleitoral votosCirculo = (VotosCirculoEleitoral) ois.readObject();
@@ -45,12 +49,13 @@ public class Main {
             // Atualizar resultados nacionais
             resultadosCirculo.forEach((partido, votos) -> resultadosNacionais.merge(partido, votos, Integer::sum));
 
-            gerarFicheiroResultado(nomeCirculo, resultadosCirculo);
+            criarFicheiroResultadoCirculo(nomeCirculo, resultadosCirculo);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
+    // Processar os votos de um círculo eleitoral
     private static Map<String, Integer> processarVotosCirculo(VotosCirculoEleitoral votosCirculo) {
         Map<String, Integer> resultados = new HashMap<>();
         int totalVotantes = 0;
@@ -85,9 +90,8 @@ public class Main {
         return resultados;
     }
 
-
-
-    private static void gerarFicheiroResultado(String nomeCirculo, Map<String, Integer> resultados) {
+    // Função que permite a criação do ficheiro de resultados de um círculo eleitoral
+    private static void criarFicheiroResultadoCirculo(String nomeCirculo, Map<String, Integer> resultados) {
         Path diretorioResultados = Paths.get(DIRETORIO_RESULTADOS);
         try {
             Files.createDirectories(diretorioResultados);
@@ -129,7 +133,8 @@ public class Main {
         }
     }
 
-    private static void gerarFicheiroResultadoNacional(Map<String, Integer> resultadosNacionais) {
+    // Função que permite a criação do ficheiro dos resultados TotalNacional
+    private static void criarFicheiroResultadoTotalNacional(Map<String, Integer> resultadosNacionais) {
         try {
             String pathFile = DIRETORIO_RESULTADOS + File.separator + "TotalNacional.txt";
             try (PrintWriter out = new PrintWriter(pathFile)) {
@@ -156,6 +161,20 @@ public class Main {
                             double percentualPartido = (double) entry.getValue() / totalValidos * 100;
                             out.println(entry.getKey() + " - " + DECIMAL_FORMAT.format(percentualPartido) + "% (" + entry.getValue() + " votos)");
                         });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Função que faz o print do resultado do ficheiro TotalNacional.txt quando o programa é corrido
+    private static void printTotalNacional() {
+        String pathFile = DIRETORIO_RESULTADOS + File.separator + "TotalNacional.txt";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(pathFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
