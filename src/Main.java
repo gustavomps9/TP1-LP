@@ -32,7 +32,7 @@ public class Main {
                 System.out.println("A diretoria '" + DIRETORIA_DADOS + "' não existe.");
             }
         } catch (IOException e) {
-            System.err.println("Ocorreu um erro ao acessar a diretoria: " + e.getMessage());
+            System.err.println("Não foi possível aceder a diretoria: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -105,6 +105,7 @@ public class Main {
     }
 
     // Função que permite a criação do ficheiro de resultados de um círculo eleitoral
+    // Função que permite a criação do ficheiro de resultados de um círculo eleitoral
     private static void criarFicheiroResultadoCirculo(String nomeCirculo, Map<String, Integer> resultados) {
         // Caminho para a diretoria de resultados
         Path diretoriaResultados = Paths.get(DIRETORIA_RESULTADOS);
@@ -121,7 +122,7 @@ public class Main {
                 int totalVotosNulos = resultados.getOrDefault("Nº de votos nulos", 0);
 
                 // Calcula os percentuais e escreve os resultados no ficheiro
-                double percentualValidos = (double) totalVotosValidos / totalVotantes * 100;
+                double percentualValidos = ((double) totalVotosValidos - totalVotosBrancos - totalVotosNulos) / totalVotantes * 100 ;
                 double percentualBrancos = (double) totalVotosBrancos / totalVotantes * 100;
                 double percentualNulos = (double) totalVotosNulos / totalVotantes * 100;
                 out.println("Nº de votantes: " + totalVotantes);
@@ -132,7 +133,7 @@ public class Main {
 
                 // Exibir resultados dos partidos
                 Map<String, Integer> resultadosPartidos = resultados.entrySet().stream()
-                        .filter(entry -> !entry.getKey().startsWith("Nº")) // Todas as entradas coeçam com "Nº"
+                        .filter(entry -> !entry.getKey().startsWith("Nº")) // Todas as entradas começam com "Nº"
                         .sorted(Map.Entry.comparingByKey())
                         .collect(Collectors.toMap(
                                 Map.Entry::getKey, // é a função que extrai a chave (nome do partido) de cada par KEY-VALUE
@@ -166,7 +167,7 @@ public class Main {
                 int totalNulos = resultadosNacionais.getOrDefault("Nº de votos nulos", 0);
 
                 // Calcula os percentuais e escreve os resultados no ficheiro
-                double percentualValidos = (double) totalValidos / totalEleitores * 100;
+                double percentualValidos = ((double) totalValidos - totalBrancos - totalNulos) / totalEleitores * 100;
                 double percentualBrancos = (double) totalBrancos / totalEleitores * 100;
                 double percentualNulos = (double) totalNulos / totalEleitores * 100;
 
