@@ -5,3 +5,5 @@ Este trabalho prático tem como objetivo desenvolver um programa que permita faz
 O programa a desenvolver deve ler os dados de cada círculo eleitoral, calcular os resultados e guardar num ficheiro de texto (um por cada círculo) com o nome do círculo e a extensão .txt. Para os resultados nacionais, para alem de aparecer no ecrã, deve ser criado um ficheiro com o nome TotalNacional.txt.
 
 O formato dos resultaods encontra-se exemplificado no enunciado disponilizado pelo docente.
+
+Nota: Este projeto foi realizado para efeitos académicos (Unidade Curricular - Laboratórios de Programação). A sua avaliação resultou na nota de 11 valores.
